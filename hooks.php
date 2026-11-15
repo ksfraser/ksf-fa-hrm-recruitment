@@ -12,18 +12,33 @@ if (!defined('SA_RECRUITMENT_VIEW')) {
     define('SA_RECRUITMENT_VIEW', SS_ksf_FA_HRM_Recruitment | 1);
     define('SA_RECRUITMENT_MANAGE', SS_ksf_FA_HRM_Recruitment | 2);
 }
+/**
+ * @BABOK Related: BR-HR-001
+ */
 class hooks_ksf_FA_HRM_Recruitment extends hooks {
     const RESPONDERS = array('RELATED_TO_FIELDS', 'RECRUITMENT_RESOLVE', 'RECRUITMENT_FIELDS');
     var $module_name = 'ksf_FA_HRM_Recruitment';
     var $version = '1.0.0';
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     function install_tabs($app) { }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     function install_options($app) { }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     function install_access() {
         $security_sections[SS_ksf_FA_HRM_Recruitment] = _("Recruitment Management");
         $security_areas['SA_RECRUITMENT_VIEW'] = array(SA_RECRUITMENT_VIEW, _("View recruitment"));
         $security_areas['SA_RECRUITMENT_MANAGE'] = array(SA_RECRUITMENT_MANAGE, _("Manage recruitment"));
         return array($security_areas, $security_sections);
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     function activate_extension($company, $check_only = true) {
         if ($check_only) { return true; }
         \Ksfraser\FrontAccounting\HRM\Recruitment\Utils\ComposerDependencies::ensure(__DIR__);
@@ -33,20 +48,32 @@ class hooks_ksf_FA_HRM_Recruitment extends hooks {
     private function ensure_composer_dependencies() {
         \Ksfraser\FrontAccounting\HRM\Recruitment\Utils\ComposerDependencies::ensure(__DIR__);
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     public function getModuleConstants(&$data, $opts = null) {
         $data['constants'] = array('SS_ksf_FA_HRM_Recruitment' => SS_ksf_FA_HRM_Recruitment, 'SA_RECRUITMENT_VIEW' => SA_RECRUITMENT_VIEW, 'SA_RECRUITMENT_MANAGE' => SA_RECRUITMENT_MANAGE);
         return true;
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     public function getModuleCapabilities(&$data, $opts = null) {
         $data['capabilities'] = self::RESPONDERS;
         return true;
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     public function hasCapability(&$data, $opts = null) {
         $capability = is_array($opts) && isset($opts['capability']) ? $opts['capability'] : null;
         if ($capability === null && isset($data['capability'])) { $capability = $data['capability']; }
         $data['has_capability'] = in_array($capability, self::RESPONDERS, true);
         return $data['has_capability'];
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     */
     public function respondToCapabilityRequest(&$data, $opts = null) {
         $request = is_array($opts) && isset($opts['request']) ? $opts['request'] : (isset($data['request']) ? $data['request'] : 'capabilities');
         $data['request'] = $request;
@@ -58,6 +85,9 @@ class hooks_ksf_FA_HRM_Recruitment extends hooks {
             default: $data['error'] = 'Unknown request type: ' . $request; return null;
         }
     }
+    /**
+     * @BABOK Related: BR-HR-003
+     */
     public function RELATED_TO_FIELDS(&$data, $opts = null) {
         if (!isset($data['module']) || !is_string($data['module'])) { $data['error'] = 'RELATED_TO_FIELDS requires data[module]'; return null; }
         if (!isset($data['type']) || !is_string($data['type'])) { $data['error'] = 'RELATED_TO_FIELDS requires data[type]'; return null; }
@@ -72,6 +102,10 @@ class hooks_ksf_FA_HRM_Recruitment extends hooks {
         ));
         return null;
     }
+    /**
+     * @BABOK Related: BR-HR-001
+     * @BABOK Related: BR-HR-003
+     */
     public function RECRUITMENT_RESOLVE(&$data, $opts = null) {
         if (!isset($data['recruitment_id']) || !is_numeric($data['recruitment_id'])) { $data['error'] = 'RECRUITMENT_RESOLVE requires data[recruitment_id]'; return null; }
         if (!isset($data['dto']) || !$data['dto'] instanceof RelatedRecordDto) { $data['error'] = 'RECRUITMENT_RESOLVE requires data[dto] as RelatedRecordDto'; return null; }
@@ -79,6 +113,9 @@ class hooks_ksf_FA_HRM_Recruitment extends hooks {
         $data['result'] = $service->resolveById((int) $data['recruitment_id'], $data['dto']);
         return null;
     }
+    /**
+     * @BABOK Related: BR-HR-003
+     */
     public function RECRUITMENT_FIELDS(&$data, $opts = null) {
         $data['fields'] = array(
             'candidateName' => _('Candidate Name'),

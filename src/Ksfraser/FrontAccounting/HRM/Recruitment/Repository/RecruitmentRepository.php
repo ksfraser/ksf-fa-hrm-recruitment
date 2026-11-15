@@ -1,8 +1,14 @@
 <?php
 declare(strict_types=1);
 namespace Ksfraser\FrontAccounting\HRM\Recruitment\Repository;
+/**
+ * @BABOK Related: BR-HR-004
+ */
 final class RecruitmentRepository {
     private string $table = 'hrm_recruitment';
+    /**
+     * @BABOK Related: BR-HR-004
+     */
     public function findAll(): array {
         if (!function_exists('db_query') || !defined('TB_PREF')) { return array(); }
         $sql = "SELECT * FROM " . TB_PREF . $this->table . " ORDER BY applied_on DESC, id DESC";
@@ -12,6 +18,9 @@ final class RecruitmentRepository {
         while (($row = db_fetch_assoc($result)) !== false && $row !== null) { $rows[] = $row; }
         return $rows;
     }
+    /**
+     * @BABOK Related: BR-HR-004
+     */
     public function findById(int $id): ?array {
         if (!function_exists('db_query') || !defined('TB_PREF')) { return null; }
         $sql = "SELECT * FROM " . TB_PREF . $this->table . " WHERE id = " . (int) $id;
@@ -20,6 +29,9 @@ final class RecruitmentRepository {
         $row = db_fetch_assoc($result);
         return $row === false ? null : $row;
     }
+    /**
+     * @BABOK Related: BR-HR-004
+     */
     public function save(array $data): int {
         if (!function_exists('db_query') || !defined('TB_PREF')) { return 0; }
         $sql = "INSERT INTO " . TB_PREF . $this->table . " (
@@ -35,6 +47,9 @@ final class RecruitmentRepository {
         db_query($sql, 'Could not save recruitment');
         return db_insert_id();
     }
+    /**
+     * @BABOK Related: BR-HR-004
+     */
     public function update(int $id, array $data): void {
         if (!function_exists('db_query') || !defined('TB_PREF')) { return; }
         $sets = [];
@@ -45,6 +60,9 @@ final class RecruitmentRepository {
         $sql = "UPDATE " . TB_PREF . $this->table . " SET " . implode(', ', $sets) . " WHERE id = " . (int) $id;
         db_query($sql, 'Could not update recruitment');
     }
+    /**
+     * @BABOK Related: BR-HR-004
+     */
     public function delete(int $id): void {
         if (!function_exists('db_query') || !defined('TB_PREF')) { return; }
         $sql = "DELETE FROM " . TB_PREF . $this->table . " WHERE id = " . (int) $id;
